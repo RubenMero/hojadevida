@@ -16,9 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from tasks.views import cv_view
+from tasks.views import hoja_vida
 
 urlpatterns = [
+    path('', hoja_vida, name='hoja_vida'),
     path('admin/', admin.site.urls),
-    path('cv/<int:idperfil>/', cv_view, name='cv'),
 ]
