@@ -1,17 +1,55 @@
-from django.shortcuts import render
-from .models import *
+from django.shortcuts import render, get_object_or_404
+from .models import (
+    DatosPersonales,
+    ExperienciaLaboral,
+    CursoRealizado,
+    Reconocimiento,
+    ProductoAcademico,
+    ProductoLaboral,
+    VentaGarage
+)
 
-def hoja_vida(request, idperfil):
-    perfil = DatosPersonales.objects.get(idperfil=idperfil)
+def cv_view(request, idperfil):
+    perfil = get_object_or_404(DatosPersonales, idperfil=idperfil)
+
+    experiencia = ExperienciaLaboral.objects.filter(
+        idperfilconqueestaactivo=idperfil,
+        activarparaqueseveaenfront=1
+    ).order_by('-fechainiciogestion')
+
+    cursos = CursoRealizado.objects.filter(
+        idperfilconqueestaactivo=idperfil,
+        activarparaqueseveaenfront=1
+    )
+
+    reconocimientos = Reconocimiento.objects.filter(
+        idperfilconqueestaactivo=idperfil,
+        activarparaqueseveaenfront=1
+    )
+
+    productos_academicos = ProductoAcademico.objects.filter(
+        idperfilconqueestaactivo=idperfil,
+        activarparaqueseveaenfront=1
+    )
+
+    productos_laborales = ProductoLaboral.objects.filter(
+        idperfilconqueestaactivo=idperfil,
+        activarparaqueseveaenfront=1
+    )
+
+    venta_garage = VentaGarage.objects.filter(
+        idperfilconqueestaactivo=idperfil,
+        activarparaqueseveaenfront=1
+    )
 
     context = {
         'perfil': perfil,
-        'experiencias': ExperienciaLaboral.objects.filter(perfil=perfil, activarparaqueseveaenfront=True),
-        'reconocimientos': Reconocimiento.objects.filter(perfil=perfil, activarparaqueseveaenfront=True),
-        'cursos': CursoRealizado.objects.filter(perfil=perfil, activarparaqueseveaenfront=True),
-        'productos_academicos': ProductoAcademico.objects.filter(perfil=perfil, activarparaqueseveaenfront=True),
-        'productos_laborales': ProductoLaboral.objects.filter(perfil=perfil, activarparaqueseveaenfront=True),
-        'ventas': VentaGarage.objects.filter(perfil=perfil, activarparaqueseveaenfront=True),
+        'experiencia': experiencia,
+        'cursos': cursos,
+        'reconocimientos': reconocimientos,
+        'productos_academicos': productos_academicos,
+        'productos_laborales': productos_laborales,
+        'venta_garage': venta_garage,
     }
 
-    return render(request, 'cv.html', context)
+    return render(request, 'hoja_vida/cv.html', context)
