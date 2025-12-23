@@ -21,6 +21,6 @@ from perfil import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.inicio),
+    path('', views.inicio, name='inicio'), 
+    path('cambiar-estado/<int:id>/', views.cambiar_estado_reconocimiento, name='cambiar_estado'),
 ]
-
